@@ -1,17 +1,44 @@
-import dgram from "dgram";
+import dgram from 'dgram';
+import express from 'express';
+import path from 'path';
+import _http from 'http';
+import socketio from 'socket.io';
 
-const PORT = 1234;
+const SOCKET_PORT = 1234;
+const SERVER_PORT = 2222;
 const HOST = '127.0.0.1';
 
-let server = dgram.createSocket('udp4');
+let app = express();    
+let http = _http.Server(app);
+let io = socketio(http);
 
-server.on('listening', function () {
-    let address = server.address();
-    console.log('UDP Server listening on ' + address.address + ":" + address.port);
+app.locals.message = "";
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-server.on('message', function (message, remote) {
-    console.log(remote.address + ':' + remote.port +' - ' + message);
+io.on('connection', socket => {
+  console.log('connected')
+  // socket.on('chat message', (msg) => {
+  //   io.emit('chat message', msg)
+  // })
 });
 
-server.bind(PORT, HOST);
+let socket = dgram.createSocket('udp4');
+
+socket.on('listening', () => {
+  let address = socket.address();
+  console.log('UDP Server listening on ' + address.address + ":" + address.port);
+});
+
+socket.on('message', (message, remote) => {
+  console.log(remote.address + ':' + remote.port +' - ' + message);
+  io.emit('chat message', message)
+});
+
+socket.bind(SOCKET_PORT, HOST);
+
+http.listen(SERVER_PORT, () => {
+  console.log('Listening on port' + SERVER_PORT);
+});

@@ -1,0 +1,27 @@
+<!doctype html>
+
+<!-- ASSIGN OUR ANGULAR MODULE -->
+<html>
+  <head>
+    <meta charset="utf-8">
+  </head>
+  <body>
+    <div class="container">
+      <!-- HEADER AND TODO COUNT -->
+      <div class="jumbotron text-center">
+        <h3 id="mememe">Message</span></h3>
+      </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.1/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script>
+      $(function () {
+        var socket = io.connect('http://localhost:2222');
+        socket.on('chat message', function(msg) { 
+          console.log(msg);
+          $( "#mememe" ).html( msg );
+        });
+      });
+    </script>
+  </body>
+</html>
