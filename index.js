@@ -34,7 +34,7 @@ socket.on('listening', () => {
 
 socket.on('message', (message, remote) => {
   console.log(remote.address + ':' + remote.port +' - ' + message);
-  io.emit('chat message', message)
+  io.emit('chat message', { "message" : message.toString() })
 });
 
 socket.bind(SOCKET_PORT, HOST);
