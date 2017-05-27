@@ -5,8 +5,8 @@ import _http from 'http';
 import socketio from 'socket.io';
 // import five from 'johnny-five';
 
-const SOCKET_PORT = 1234;
-const SERVER_PORT = 2222;
+const SOCKET_PORT = 8888;
+const SERVER_PORT = process.env.PORT | 8080;
 // const HOST = '127.0.0.1';
 
 let app = express();
