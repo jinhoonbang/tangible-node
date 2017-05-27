@@ -29,6 +29,8 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+app.use(express.static(__dirname + '/public'));
+
 io.on('connection', socket => {
   console.log('connected')
   // socket.on('chat message', (msg) => {
