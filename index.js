@@ -3,7 +3,7 @@ import express from 'express';
 import path from 'path';
 import _http from 'http';
 import socketio from 'socket.io';
-import bodyParser from 'bodyParser';
+import bodyParser from 'body-parser';
 // import five from 'johnny-five';
 
 const SOCKET_PORT = 8888;
@@ -36,6 +36,8 @@ app.get('/', (req, res) => {
 });
 
 app.post('/', (req, res) => {
+  console.log("message: " + req.body.message)
+  res.send("ok")
   io.emit('chat message', { "message" : req.body.message })
 })
 
@@ -58,7 +60,7 @@ io.on('connection', socket => {
 //   io.emit('chat message', { "message" : message.toString() })
 // });
 
-socket.bind(SOCKET_PORT);
+// socket.bind(SOCKET_PORT);
 
 http.listen(SERVER_PORT, () => {
   console.log('Listening on port' + SERVER_PORT);
