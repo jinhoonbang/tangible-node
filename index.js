@@ -3,6 +3,7 @@ import express from 'express';
 import path from 'path';
 import _http from 'http';
 import socketio from 'socket.io';
+import bodyParser from 'bodyParser';
 // import five from 'johnny-five';
 
 const SOCKET_PORT = 8888;
@@ -25,11 +26,18 @@ let io = socketio(http);
 
 app.locals.message = "";
 
+app.use(express.static(__dirname + '/public'));
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-app.use(express.static(__dirname + '/public'));
+app.post('/', (req, res) => {
+  io.emit('chat message', { "message" : req.body.message })
+})
 
 io.on('connection', socket => {
   console.log('connected')
@@ -38,17 +46,17 @@ io.on('connection', socket => {
   // })
 });
 
-let socket = dgram.createSocket('udp4');
+// let socket = dgram.createSocket('udp4');
 
-socket.on('listening', () => {
-  let address = socket.address();
-  console.log('UDP Server listening on ' + address.address + ":" + address.port);
-});
+// socket.on('listening', () => {
+//   let address = socket.address();
+//   console.log('UDP Server listening on ' + address.address + ":" + address.port);
+// });
 
-socket.on('message', (message, remote) => {
-  console.log(remote.address + ':' + remote.port +' - ' + message);
-  io.emit('chat message', { "message" : message.toString() })
-});
+// socket.on('message', (message, remote) => {
+//   console.log(remote.address + ':' + remote.port +' - ' + message);
+//   io.emit('chat message', { "message" : message.toString() })
+// });
 
 socket.bind(SOCKET_PORT);
 
